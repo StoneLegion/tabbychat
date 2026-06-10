@@ -43,6 +43,7 @@ settings.advanced.convertunicodetext=Convert unicode syntax
 settings.advanced.forceunicode=Tvinga Unicode Chatt Rendering
 settings.advanced.maxlengthchannelname=Kanalnamn max. längd
 settings.advanced.multichatdelay=Multi-chatt skickningsfördröjning (ms)
+settings.advanced.extendedchatlimit=Use extended chat split limit (256)
 settings.advanced.name=Avancerat
 settings.advanced.textignoreopacity=Text ignores opacity setting
 

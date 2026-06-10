@@ -14,6 +14,7 @@ import acs.tabbychat.gui.PrefsButton;
 import acs.tabbychat.gui.context.ChatContextMenu;
 import acs.tabbychat.util.ChatExtensions;
 import acs.tabbychat.util.TabbyChatUtils;
+import acs.tabbychat.threads.BackgroundChatThread;
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -423,7 +424,7 @@ public class GuiChatTC extends GuiChat {
         if (lng == 0)
             return 0;
         else
-            return (lng + 100 - 1) / 100;
+            return (lng + BackgroundChatThread.getChatSplitLimit() - 1) / BackgroundChatThread.getChatSplitLimit();
     }
 
     private int getFocusedFieldIndex() {

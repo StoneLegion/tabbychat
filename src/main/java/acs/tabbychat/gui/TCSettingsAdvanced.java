@@ -19,6 +19,7 @@ public class TCSettingsAdvanced extends TCSettingsGUI {
     private static final int CHAT_SCROLL_HISTORY_ID = 9401;
     private static final int MAXLENGTH_CHANNEL_NAME_ID = 9402;
     private static final int MULTICHAT_DELAY_ID = 9403;
+    private static final int EXTENDED_CHAT_LIMIT_ID = 9404;
     private static final int CHATBOX_UNFOC_HEIGHT_ID = 9406;
     private static final int CHAT_FADE_TICKS_ID = 9408;
     private static final int TEXT_IGNORE_OPACITY_ID = 9410;
@@ -28,6 +29,7 @@ public class TCSettingsAdvanced extends TCSettingsGUI {
     public TCSettingTextBox chatScrollHistory;
     public TCSettingTextBox maxLengthChannelName;
     public TCSettingTextBox multiChatDelay;
+    public TCSettingBool extendedChatLimit;
     public TCSettingSlider chatBoxUnfocHeight;
     public TCSettingSlider chatFadeTicks;
     public TCSettingBool textIgnoreOpacity;
@@ -43,6 +45,8 @@ public class TCSettingsAdvanced extends TCSettingsGUI {
                                                     "maxLengthChannelName", propertyPrefix, MAXLENGTH_CHANNEL_NAME_ID);
         multiChatDelay = new TCSettingTextBox("500", "multiChatDelay",
                                               propertyPrefix, MULTICHAT_DELAY_ID);
+        extendedChatLimit = new TCSettingBool(true, "extendedchatlimit",
+                                              propertyPrefix, EXTENDED_CHAT_LIMIT_ID);
         chatBoxUnfocHeight = new TCSettingSlider(50.0f, "chatBoxUnfocHeight",
                                                  propertyPrefix, CHATBOX_UNFOC_HEIGHT_ID, 20.0f, 100.0f);
         chatFadeTicks = new TCSettingSlider(200.0f, "chatFadeTicks",
@@ -66,6 +70,7 @@ public class TCSettingsAdvanced extends TCSettingsGUI {
         this.buttonList.add(this.chatScrollHistory);
         this.buttonList.add(this.maxLengthChannelName);
         this.buttonList.add(this.multiChatDelay);
+        this.buttonList.add(this.extendedChatLimit);
         this.buttonList.add(this.chatBoxUnfocHeight);
         this.buttonList.add(this.chatFadeTicks);
         this.buttonList.add(this.textIgnoreOpacity);
@@ -96,24 +101,28 @@ public class TCSettingsAdvanced extends TCSettingsGUI {
                 this.rowY(3));
         this.multiChatDelay.setButtonDims(40, 11);
 
+        this.extendedChatLimit.setButtonLoc(col1x, this.rowY(4));
+        this.extendedChatLimit.setLabelLoc(col1x + 19);
+        this.extendedChatLimit.buttonColor = buttonColor;
+
         this.chatBoxUnfocHeight.setLabelLoc(col1x);
         this.chatBoxUnfocHeight.setButtonLoc(
                 col1x + 5 + mc.fontRenderer.getStringWidth(this.chatBoxUnfocHeight.description),
-                this.rowY(4));
+                this.rowY(5));
         this.chatBoxUnfocHeight.buttonColor = buttonColor;
 
         this.chatFadeTicks.setLabelLoc(col1x);
         this.chatFadeTicks.setButtonLoc(
                 col1x + 5 + mc.fontRenderer.getStringWidth(this.chatFadeTicks.description),
-                this.rowY(5));
+                this.rowY(6));
         this.chatFadeTicks.buttonColor = buttonColor;
         this.chatFadeTicks.units = "";
 
-        this.textIgnoreOpacity.setButtonLoc(col1x, this.rowY(6));
+        this.textIgnoreOpacity.setButtonLoc(col1x, this.rowY(7));
         this.textIgnoreOpacity.setLabelLoc(col1x + 19);
         this.textIgnoreOpacity.buttonColor = buttonColor;
 
-        this.convertUnicodeText.setButtonLoc(col1x, this.rowY(7));
+        this.convertUnicodeText.setButtonLoc(col1x, this.rowY(8));
         this.convertUnicodeText.setLabelLoc(col1x + 19);
         this.convertUnicodeText.buttonColor = buttonColor;
     }
@@ -128,6 +137,7 @@ public class TCSettingsAdvanced extends TCSettingsGUI {
         ChatBox.anchoredTop = settings.anchoredTop;
         convertUnicodeText.setValue(settings.convertUnicodeText);
         multiChatDelay.setValue(Integer.toString(settings.multiChatDelay));
+        extendedChatLimit.setValue(settings.extendedChatLimit);
         ChatBox.current.height = TabbyChatUtils.parseInteger(String.valueOf(settings.chatBoxHeight),
                                                              ChatBox.absMinH, 10000, 180);
         chatBoxUnfocHeight.setValue(settings.chatBoxUnfocHeight);
@@ -160,6 +170,7 @@ public class TCSettingsAdvanced extends TCSettingsGUI {
             settings.chatScrollHistory = Integer.parseInt(chatScrollHistory.getValue());
             settings.maxLengthChannelName = Integer.parseInt(maxLengthChannelName.getValue());
             settings.multiChatDelay = Integer.parseInt(multiChatDelay.getValue());
+            settings.extendedChatLimit = extendedChatLimit.getValue();
         }
         catch (NumberFormatException e) {
             TabbyChatUtils.log.warn("Invalid format in advanced settings");

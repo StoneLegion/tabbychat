@@ -43,6 +43,7 @@ settings.advanced.convertunicodetext=Convert unicode syntax
 settings.advanced.forceunicode=Юникод рендеринг
 settings.advanced.maxlengthchannelname=Макс. длина имени канала
 settings.advanced.multichatdelay=Отправка сообщений, мультичат (Мс)
+settings.advanced.extendedchatlimit=Use extended chat split limit (256)
 settings.advanced.name=Дополнительно
 settings.advanced.textignoreopacity=Text ignores opacity setting
 

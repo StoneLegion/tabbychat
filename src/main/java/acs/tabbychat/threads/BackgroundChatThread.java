@@ -7,6 +7,8 @@ import net.minecraftforge.client.ClientCommandHandler;
 import org.apache.commons.lang3.StringUtils;
 
 public class BackgroundChatThread extends Thread {
+    private static final int DEFAULT_CHAT_SPLIT_LIMIT = 100;
+    private static final int EXTENDED_CHAT_SPLIT_LIMIT = 256;
     String sendChat;
     String knownPrefix;
 
@@ -77,9 +79,10 @@ public class BackgroundChatThread extends Thread {
 
     private void sendChat(int start, String[] toSplit, String cmdPrefix) {
         int suffix = cmdPrefix.length();
+        int maxLength = getChatSplitLimit();
         StringBuilder sendPart = new StringBuilder(119);
         for (int word = start; word < toSplit.length; word++) {
-            if (sendPart.length() + toSplit[word].length() + suffix > 100) {
+            if (sendPart.length() + toSplit[word].length() + suffix > maxLength) {
                 mc.thePlayer.sendChatMessage(cmdPrefix + sendPart.toString().trim());
                 try {
                     Thread.sleep(Integer.parseInt(TabbyChat.advancedSettings.multiChatDelay
@@ -106,5 +109,10 @@ public class BackgroundChatThread extends Thread {
 
             mc.thePlayer.sendChatMessage(message);
         }
+    }
+
+    public static int getChatSplitLimit() {
+        return TabbyChat.advancedSettings != null && TabbyChat.advancedSettings.extendedChatLimit.getValue()
+            ? EXTENDED_CHAT_SPLIT_LIMIT : DEFAULT_CHAT_SPLIT_LIMIT;
     }
 }

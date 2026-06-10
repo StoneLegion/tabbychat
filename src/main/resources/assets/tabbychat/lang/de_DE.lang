@@ -43,6 +43,7 @@ settings.advanced.convertunicodetext=Unicode syntax konvertieren
 settings.advanced.forceunicode=Erzwinge Unicode Chat Anzeige
 settings.advanced.maxlengthchannelname=Maximale Länge Channelname
 settings.advanced.multichatdelay=Multi-Chat Sendeverzögerung (ms)
+settings.advanced.extendedchatlimit=Use extended chat split limit (256)
 settings.advanced.name=Erweiterte
 settings.advanced.textignoreopacity=Text ignoriert Opazitätseinstellungen
 

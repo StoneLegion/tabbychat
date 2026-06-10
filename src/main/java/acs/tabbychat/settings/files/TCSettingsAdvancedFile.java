@@ -20,6 +20,7 @@ public class TCSettingsAdvancedFile {
     private final String anchoredTopPropertyName = "chatbox.anchoredTop";
     private final String convertUnicodeTextPropertyName = "convertunicodetext";
     private final String multiChatDelayPropertyName = "multiChatDelay";
+    private final String extendedChatLimitPropertyName = "extendedchatlimit";
     private final String chatBoxHeightPropertyName = "chatbox.height";
     private final String chatBoxUnfocHeightPropertyName = "chatBoxUnfocHeight";
     private final String chatBoxYPropertyName = "chatbox.y";
@@ -35,6 +36,7 @@ public class TCSettingsAdvancedFile {
     public boolean anchoredTop = false;
     public boolean convertUnicodeText = false;
     public int multiChatDelay = 500;
+    public boolean extendedChatLimit = true;
     public int chatBoxHeight = 180;
     public float chatBoxUnfocHeight = 50.0f;
     public int chatBoxY = -36;
@@ -69,6 +71,8 @@ public class TCSettingsAdvancedFile {
             anchoredTop = Boolean.parseBoolean(settingsTable.getProperty(anchoredTopPropertyName));
             convertUnicodeText = Boolean.parseBoolean(settingsTable.getProperty(convertUnicodeTextPropertyName));
             multiChatDelay = Integer.parseInt(settingsTable.getProperty(multiChatDelayPropertyName));
+            extendedChatLimit = Boolean.parseBoolean(
+                settingsTable.getProperty(extendedChatLimitPropertyName, Boolean.toString(extendedChatLimit)));
             chatBoxHeight = TabbyChatUtils.parseInteger(settingsTable.getProperty(chatBoxHeightPropertyName),
                                                         ChatBox.absMinH, 10000, 180);
             chatBoxUnfocHeight = Float.parseFloat(settingsTable.getProperty(chatBoxUnfocHeightPropertyName));
@@ -96,6 +100,7 @@ public class TCSettingsAdvancedFile {
         settingsTable.put(anchoredTopPropertyName, Boolean.toString(anchoredTop));
         settingsTable.put(convertUnicodeTextPropertyName, Boolean.toString(convertUnicodeText));
         settingsTable.put(multiChatDelayPropertyName, Integer.toString(multiChatDelay));
+        settingsTable.put(extendedChatLimitPropertyName, Boolean.toString(extendedChatLimit));
         settingsTable.put(chatBoxHeightPropertyName, Integer.toString(chatBoxHeight));
         settingsTable.put(chatBoxUnfocHeightPropertyName, Float.toString(chatBoxUnfocHeight));
         settingsTable.put(chatBoxYPropertyName, Integer.toString(chatBoxY));
