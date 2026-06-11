@@ -11,6 +11,7 @@ import acs.tabbychat.gui.ChatButton;
 import acs.tabbychat.gui.ChatChannelGUI;
 import acs.tabbychat.gui.ChatScrollBar;
 import acs.tabbychat.gui.PrefsButton;
+import acs.tabbychat.gui.WelcomeButton;
 import acs.tabbychat.gui.context.ChatContextMenu;
 import acs.tabbychat.util.ChatExtensions;
 import acs.tabbychat.util.TabbyChatUtils;
@@ -55,6 +56,8 @@ import java.util.Iterator;
 import java.util.List;
 
 public class GuiChatTC extends GuiChat {
+    private static final int WELCOME_BUTTON_ID = 9501;
+    private static final String WELCOME_MESSAGE = "&#ff0000W&#ff2d00e&#ff5a00l&#ff8700c&#ffb400o&#ffe100m&#f2ff00e&#c5ff00 &#98ff00t&#6bff00o&#3eff00 &#11ff00t&#00ff1ch&#00ff49e&#00ff76 &#00ffa3S&#00ffd0e&#00fffdr&#00d2ffv&#00a5ffe&#0078ffr&#004bff!";
     private static ScaledResolution sr;
     private final Logger log = TabbyChatUtils.log;
     private final List<String> foundPlayerNames = new ArrayList<>();
@@ -63,6 +66,7 @@ public class GuiChatTC extends GuiChat {
     public ChatScrollBar scrollBar;
     public TabbyChat tc;
     public GuiNewChatTC gnc;
+    private WelcomeButton welcomeButton;
     private boolean playerNamesFound = false;
     private boolean waitingOnPlayerNames = false;
     private int playerNameIndex = 0;
@@ -86,6 +90,10 @@ public class GuiChatTC extends GuiChat {
 
     @Override
     public void actionPerformed(GuiButton par1GuiButton) {
+        if (par1GuiButton.id == WELCOME_BUTTON_ID) {
+            TabbyChatUtils.writeLargeChat(WELCOME_MESSAGE);
+            return;
+        }
         // Attempts to send button to extensions.
         // If one returns true, stops here.
         for (IChatMouseExtension extension : extensions.getListOf(IChatMouseExtension.class)) {
@@ -544,7 +552,9 @@ public class GuiChatTC extends GuiChat {
         }
 
         this.sentHistoryCursor = this.gnc.getSentMessages().size();
-        int textFieldWidth = (MacroKeybindCompat.present) ? this.width - 26 : this.width - 4;
+        boolean showWelcomeButton = TabbyChat.advancedSettings.welcomeButton.getValue();
+        int textFieldWidth = (MacroKeybindCompat.present ? this.width - 26 : this.width - 4)
+                             - (showWelcomeButton ? 26 : 0);
         String text = this.defaultInputFieldText;
         if (this.inputField != null)
             text = inputField.getText();
@@ -557,6 +567,11 @@ public class GuiChatTC extends GuiChat {
         this.inputField.setVisible(true);
         this.inputField.setEnableBackgroundDrawing(false);
         this.inputList.add(0, this.inputField);
+        if (showWelcomeButton) {
+            this.welcomeButton = new WelcomeButton(WELCOME_BUTTON_ID, 4 + textFieldWidth,
+                                                   this.height - 13, 12, 12);
+            this.buttonList.add(this.welcomeButton);
+        }
         if (!tc.enabled())
             return;
 
@@ -901,6 +916,15 @@ public class GuiChatTC extends GuiChat {
             }
         // Replicating GuiScreen's mouseClicked method since 'super' won't work
         for (GuiButton _guibutton : this.buttonList) {
+            if (_guibutton instanceof WelcomeButton welcomeButton
+                && welcomeButton.mousePressed(this.mc, _x, _y)) {
+                if (_button == 0) {
+                    this.selectedButton = welcomeButton;
+                    this.mc.thePlayer.playSound("random.click", 1.0F, 1.0F);
+                    this.actionPerformed(welcomeButton);
+                    return;
+                }
+            }
             if (_guibutton instanceof ChatButton guiButton) {
                 if (guiButton.mousePressed(this.mc, _x, _y)) {
                     if (_button == 0) {

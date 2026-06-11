@@ -44,6 +44,7 @@ settings.advanced.forceunicode=Pakota Unicode Keskustelun nÃ¤yttÃ¤minen
 settings.advanced.maxlengthchannelname=Kanavan nimen maksimi pituus
 settings.advanced.multichatdelay=Monen viestin vÃ¤lissÃ¤ oleva aika (ms)
 settings.advanced.extendedchatlimit=Use extended chat split limit (256)
+settings.advanced.welcomebutton=Show welcome button (GTNH 2.9+)
 settings.advanced.name=Edistynyt
 settings.advanced.textignoreopacity=Text ignores opacity setting
 

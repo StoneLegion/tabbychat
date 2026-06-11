@@ -44,6 +44,7 @@ settings.advanced.forceunicode=Tvinga Unicode Chatt Rendering
 settings.advanced.maxlengthchannelname=Kanalnamn max. längd
 settings.advanced.multichatdelay=Multi-chatt skickningsfördröjning (ms)
 settings.advanced.extendedchatlimit=Use extended chat split limit (256)
+settings.advanced.welcomebutton=Show welcome button (GTNH 2.9+)
 settings.advanced.name=Avancerat
 settings.advanced.textignoreopacity=Text ignores opacity setting
 
