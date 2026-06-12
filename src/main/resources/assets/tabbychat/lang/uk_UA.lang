@@ -44,6 +44,7 @@ settings.advanced.forceunicode=Юнікод рендеринг
 settings.advanced.maxlengthchannelname=Макс. довжина імені каналу
 settings.advanced.multichatdelay=Затримка відправлення у мультичат (Мс)
 settings.advanced.extendedchatlimit=Use extended chat split limit (256)
+settings.advanced.cropstab=Send GTNH crop scans to tab
 settings.advanced.welcomebutton=Show welcome button (GTNH 2.9+)
 settings.advanced.name=Додатково
 settings.advanced.textignoreopacity=Text ignores opacity setting

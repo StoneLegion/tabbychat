@@ -44,6 +44,7 @@ settings.advanced.forceunicode=Erzwinge Unicode Chat Anzeige
 settings.advanced.maxlengthchannelname=Maximale Länge Channelname
 settings.advanced.multichatdelay=Multi-Chat Sendeverzögerung (ms)
 settings.advanced.extendedchatlimit=Use extended chat split limit (256)
+settings.advanced.cropstab=Send GTNH crop scans to tab
 settings.advanced.welcomebutton=Show welcome button (GTNH 2.9+)
 settings.advanced.name=Erweiterte
 settings.advanced.textignoreopacity=Text ignoriert Opazitätseinstellungen

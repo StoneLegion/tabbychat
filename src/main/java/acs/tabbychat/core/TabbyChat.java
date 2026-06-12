@@ -71,6 +71,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 public class TabbyChat {
+    private static final String CROP_TAB_NAME = "Crops";
     private static final Logger log = TabbyChatUtils.log;
     private static final Gson gson = new GsonBuilder()
         .excludeFieldsWithoutExposeAnnotation()
@@ -274,7 +275,10 @@ public class TabbyChat {
                 curScreen.addChannelLive(theChan);
             }
         }
-        if (generalSettings.groupSpam.getValue()) {
+        if (CROP_TAB_NAME.equals(name)) {
+            this.lastChatMap.put(theChan, thisChat.getChatComponent().getUnformattedText());
+        }
+        else if (generalSettings.groupSpam.getValue()) {
             this.spamCheck(theChan, thisChat);
             if (theChan.hasSpam) {
                 theChan.removeChatLine(0);
@@ -583,48 +587,50 @@ public class TabbyChat {
         if (theChat == null)
             return;
 
-        TCChatLine resultChatLine;
+        IChatComponent raw = theChat.getChatComponent();
+        if (generalSettings.saveChatLog.getValue())
+            TabbyChatUtils.logChat(raw.getUnformattedText(), null);
+
+        if (advancedSettings.cropTab.getValue() && this.processCropLine(theChat)) {
+            this.resetDisplayedChat();
+            return;
+        }
+
         List<String> toTabs = new ArrayList<>(20);
         List<String> filterTabs = new ArrayList<>(20);
         String channelTab = null;
         String pmTab = null;
         toTabs.add("*");
 
-        IChatComponent raw = theChat.getChatComponent();
         IChatComponent filtered = this.processChatForFilters(raw, filterTabs);
-        if (generalSettings.saveChatLog.getValue())
-            TabbyChatUtils.logChat(raw.getUnformattedText(), null);
+        if (filtered == null)
+            return;
 
-        if (filtered != null) {
-            ChatChannel tab;
-            if (serverSettings.autoChannelSearch.getValue())
-                channelTab = this.processChatForChannels(raw);
-            if (channelTab == null) {
-                if (serverSettings.autoPMSearch.getValue()) {
-                    pmTab = this.processChatForPMs(raw.getUnformattedText());
-                    if (pmTab != null) {
-                        tab = new ChatChannel(pmTab);
-                        if (generalSettings.saveChatLog.getValue()
-                            && generalSettings.splitChatLog.getValue())
-                            TabbyChatUtils.logChat(raw.getUnformattedText(), tab);
-                    }
+        ChatChannel tab;
+        if (serverSettings.autoChannelSearch.getValue())
+            channelTab = this.processChatForChannels(raw);
+        if (channelTab == null) {
+            if (serverSettings.autoPMSearch.getValue()) {
+                pmTab = this.processChatForPMs(raw.getUnformattedText());
+                if (pmTab != null) {
+                    tab = new ChatChannel(pmTab);
+                    if (generalSettings.saveChatLog.getValue()
+                        && generalSettings.splitChatLog.getValue())
+                        TabbyChatUtils.logChat(raw.getUnformattedText(), tab);
                 }
             }
-            else {
-                toTabs.add(channelTab);
-                tab = new ChatChannel(channelTab);
-                if (generalSettings.saveChatLog.getValue()
-                    && generalSettings.splitChatLog.getValue())
-                    TabbyChatUtils.logChat(raw.getUnformattedText(), tab);
-            }
-            toTabs.addAll(filterTabs);
         }
         else {
-            return;
+            toTabs.add(channelTab);
+            tab = new ChatChannel(channelTab);
+            if (generalSettings.saveChatLog.getValue()
+                && generalSettings.splitChatLog.getValue())
+                TabbyChatUtils.logChat(raw.getUnformattedText(), tab);
         }
-        resultChatLine = new TCChatLine(theChat.getUpdatedCounter(), filtered,
-                                        theChat.getChatLineID(), theChat.statusMsg);
+        toTabs.addAll(filterTabs);
 
+        TCChatLine resultChatLine = new TCChatLine(theChat.getUpdatedCounter(), filtered,
+                                                   theChat.getChatLineID(), theChat.statusMsg);
         resultChatLine.timeStamp = Calendar.getInstance().getTime();
 
         HashSet<String> tabSet = new HashSet<>(toTabs);
@@ -657,8 +663,8 @@ public class TabbyChat {
                 visible = true;
         }
 
-        for (String tab : tabSet) {
-            this.addToChannel(tab, resultChatLine, visible);
+        for (String tabName : tabSet) {
+            this.addToChannel(tabName, resultChatLine, visible);
         }
 
         // Add spam counter to result if it's spam.
@@ -693,6 +699,59 @@ public class TabbyChat {
         finally {
             this.lastChatReadLock.unlock();
         }
+    }
+
+    private boolean processCropLine(TCChatLine currentLine) {
+        if (isCropStats(currentLine) || isCropSoil(currentLine) || isCropSeed(currentLine)) {
+            this.pushCropLine(currentLine);
+            return true;
+        }
+        return false;
+    }
+
+    private void pushCropLine(TCChatLine line) {
+        ChatChannel cropChannel = this.channelMap.get(CROP_TAB_NAME);
+        if (cropChannel == null) {
+            cropChannel = new ChatChannel(CROP_TAB_NAME);
+            this.channelMap.put(CROP_TAB_NAME, cropChannel);
+            if (mc.currentScreen instanceof GuiChatTC curScreen) {
+                curScreen.addChannelLive(cropChannel);
+            }
+        }
+        cropChannel.notificationsOn = true;
+        if (generalSettings.saveChatLog.getValue()
+            && generalSettings.splitChatLog.getValue())
+            TabbyChatUtils.logChat(line.getChatComponent().getUnformattedText(), cropChannel);
+
+        boolean visible = this.getActive().contains(CROP_TAB_NAME);
+        this.addToChannel(CROP_TAB_NAME, line, visible);
+        if (!visible)
+            cropChannel.unread = true;
+        lastChatWriteLock.lock();
+        try {
+            this.lastChat = line;
+        }
+        finally {
+            lastChatWriteLock.unlock();
+        }
+    }
+
+    private boolean isCropStats(TCChatLine line) {
+        String text = EnumChatFormatting.getTextWithoutFormattingCodes(line.getChatComponent()
+                                                                           .getUnformattedText());
+        return text != null && text.startsWith("Stats -- Growth:");
+    }
+
+    private boolean isCropSoil(TCChatLine line) {
+        String text = EnumChatFormatting.getTextWithoutFormattingCodes(line.getChatComponent()
+                                                                           .getUnformattedText());
+        return text != null && text.startsWith("Soil -- Fertilizer:");
+    }
+
+    private boolean isCropSeed(TCChatLine line) {
+        String text = EnumChatFormatting.getTextWithoutFormattingCodes(line.getChatComponent()
+                                                                           .getUnformattedText());
+        return text != null && text.startsWith("Seed:");
     }
 
     private String processChatForChannels(IChatComponent raw) {
@@ -908,6 +967,15 @@ public class TabbyChat {
         for (String defChan : dList) {
             if (defChan.length() > 0)
                 this.channelMap.put(defChan, new ChatChannel(defChan));
+        }
+
+        if (TabbyChat.advancedSettings.cropTab.getValue()) {
+            if (!this.channelMap.containsKey(CROP_TAB_NAME)) {
+                this.channelMap.put(CROP_TAB_NAME, new ChatChannel(CROP_TAB_NAME));
+            }
+        }
+        else {
+            this.channelMap.remove(CROP_TAB_NAME);
         }
     }
 

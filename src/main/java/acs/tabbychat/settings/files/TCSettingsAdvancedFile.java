@@ -21,6 +21,7 @@ public class TCSettingsAdvancedFile {
     private final String convertUnicodeTextPropertyName = "convertunicodetext";
     private final String multiChatDelayPropertyName = "multiChatDelay";
     private final String extendedChatLimitPropertyName = "extendedchatlimit";
+    private final String cropTabPropertyName = "cropstab";
     private final String welcomeButtonPropertyName = "welcomebutton";
     private final String chatBoxHeightPropertyName = "chatbox.height";
     private final String chatBoxUnfocHeightPropertyName = "chatBoxUnfocHeight";
@@ -38,6 +39,7 @@ public class TCSettingsAdvancedFile {
     public boolean convertUnicodeText = false;
     public int multiChatDelay = 500;
     public boolean extendedChatLimit = true;
+    public boolean cropTab = false;
     public boolean welcomeButton = false;
     public int chatBoxHeight = 180;
     public float chatBoxUnfocHeight = 50.0f;
@@ -75,6 +77,8 @@ public class TCSettingsAdvancedFile {
             multiChatDelay = Integer.parseInt(settingsTable.getProperty(multiChatDelayPropertyName));
             extendedChatLimit = Boolean.parseBoolean(
                 settingsTable.getProperty(extendedChatLimitPropertyName, Boolean.toString(extendedChatLimit)));
+            cropTab = Boolean.parseBoolean(
+                settingsTable.getProperty(cropTabPropertyName, Boolean.toString(cropTab)));
             welcomeButton = Boolean.parseBoolean(
                 settingsTable.getProperty(welcomeButtonPropertyName, Boolean.toString(welcomeButton)));
             chatBoxHeight = TabbyChatUtils.parseInteger(settingsTable.getProperty(chatBoxHeightPropertyName),
@@ -105,6 +109,7 @@ public class TCSettingsAdvancedFile {
         settingsTable.put(convertUnicodeTextPropertyName, Boolean.toString(convertUnicodeText));
         settingsTable.put(multiChatDelayPropertyName, Integer.toString(multiChatDelay));
         settingsTable.put(extendedChatLimitPropertyName, Boolean.toString(extendedChatLimit));
+        settingsTable.put(cropTabPropertyName, Boolean.toString(cropTab));
         settingsTable.put(welcomeButtonPropertyName, Boolean.toString(welcomeButton));
         settingsTable.put(chatBoxHeightPropertyName, Integer.toString(chatBoxHeight));
         settingsTable.put(chatBoxUnfocHeightPropertyName, Float.toString(chatBoxUnfocHeight));
